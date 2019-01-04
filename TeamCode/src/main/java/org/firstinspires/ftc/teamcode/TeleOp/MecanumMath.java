@@ -16,8 +16,8 @@
  *         The motors correspond to the array elements like so:
  *         <p>
  *         [Motor 1]                    [Motor 2]
- *         [^Front of robot^]
- *         [   ROBOT base   ]
+ *                  [^Front of robot^]
+ *                  [   ROBOT base   ]
  *         [Motor 3]                    [Motor 4]
  *         <p>
  *         (The directions of the mecanum wheels should form a diamond when viewed from above, NOT an 'X')

@@ -1,19 +1,20 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
-@TeleOp(name = "🅱️", group = "Robot")
+public abstract class TeleOpWithControls extends LinearOpMode {
 
-public class TestTeleOp extends LinearOpMode {
-
-    private double position = Robot.HOOK_INITIAL_POSITION;
+    protected Drive.DriveType type;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        // Send diagnostics to user
+        telemetry.addData("Status", "Initializing...");
+        telemetry.update();
+
         // Init the Robot's hardware (don't forget this!)
         Robot.init(hardwareMap);
 
@@ -21,11 +22,14 @@ public class TestTeleOp extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        type = (type != null) ? type : Drive.DriveType.TANK;
+
         waitForStart();
 
         while (opModeIsActive()) {
-            // Set drivemode to tank
-            Drive.Tank(Robot.driveMotors, gamepad1);
+
+            // Drive using set drivemode
+            Drive.driveWithType(Robot.driveMotors, gamepad1, type);
 
             // Rack/Pinion Control (g1.dpad_up, dpad_down)
             if (gamepad1.dpad_up) {
@@ -47,7 +51,6 @@ public class TestTeleOp extends LinearOpMode {
 
             // Send diagnostics to user
             telemetry.addData("Status", "Running");
-            telemetry.addData("Multiplier", Drive.multiplier);
             telemetry.update();
         }
     }
