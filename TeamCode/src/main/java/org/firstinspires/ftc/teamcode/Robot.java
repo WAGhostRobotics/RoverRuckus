@@ -22,14 +22,6 @@ public class Robot {
 
     // Lift
     public static DcMotor rackPinion;
-    public static Servo hook;
-    public static final double HOOK_INITIAL_POSITION = 0.5;
-
-    // Flipper Arm
-    public static DcMotor flipper;
-
-    // Intake
-    public static DcMotor intake;
 
     /**
      *
@@ -55,12 +47,5 @@ public class Robot {
 
         rackPinion = hardwareMap.get(DcMotor.class, "rp");
         rackPinion.setDirection(DcMotorSimple.Direction.REVERSE);
-        hook = hardwareMap.get(Servo.class, "hook");
-        hook.setPosition(HOOK_INITIAL_POSITION);
-
-        flipper = hardwareMap.get(DcMotor.class, "fl");
-        flipper.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        // intake = hardwareMap.get(DcMotor.class, "in");
     }
 }

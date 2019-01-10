@@ -1,36 +1,36 @@
 /**
  * @author Leo
  * Last edit date: 28 December 2018
- *         <p>
- *         ======================================================================================
- *         Math involved in converting input values (vectors / directions) to the motor values
- *         required to move the robot in that direction using mecanum wheels.
- *         ======================================================================================
- *         <p>
- *         Made by LEO (See? I'm helping)
- *         <p>
- *         The motor values are passed around as arrays containing 4 double values:
- *         <p>
- *         {motor 1, motor 2, motor 3, motor 4}
- *         <p>
- *         The motors correspond to the array elements like so:
- *         <p>
- *         [Motor 1]                    [Motor 2]
- *                  [^Front of robot^]
- *                  [   ROBOT base   ]
- *         [Motor 3]                    [Motor 4]
- *         <p>
- *         (The directions of the mecanum wheels should form a diamond when viewed from above, NOT an 'X')
- *         (It is not certain if the code would still work with an 'X' arrangement, but it might)
- *         =======================================================================================
- *         <p>
- *         The length of the vectors passed to the methods do NOT correspond to drive distance.
- *         Instead, longer vectors will produce faster motion (but the motors can only handle values between -1 and 1)
- *         <p>
- *         If you are unfamiliar with vectors and how they are represented, consult the internet first.
- *         This code does not use any complicated vector math, only simple conversions and some
- *         addition
- *         =======================================================================================
+ * <p>
+ * ======================================================================================
+ * Math involved in converting input values (vectors / directions) to the motor values
+ * required to move the robot in that direction using mecanum wheels.
+ * ======================================================================================
+ * <p>
+ * Made by LEO (See? I'm helping)
+ * <p>
+ * The motor values are passed around as arrays containing 4 double values:
+ * <p>
+ * {motor 1, motor 2, motor 3, motor 4}
+ * <p>
+ * The motors correspond to the array elements like so:
+ * <p>
+ * [Motor 1]                    [Motor 2]
+ * [^Front of robot^]
+ * [   ROBOT base   ]
+ * [Motor 3]                    [Motor 4]
+ * <p>
+ * (The directions of the mecanum wheels should form a diamond when viewed from above, NOT an 'X')
+ * (It is not certain if the code would still work with an 'X' arrangement, but it might)
+ * =======================================================================================
+ * <p>
+ * The length of the vectors passed to the methods do NOT correspond to drive distance.
+ * Instead, longer vectors will produce faster motion (but the motors can only handle values between -1 and 1)
+ * <p>
+ * If you are unfamiliar with vectors and how they are represented, consult the internet first.
+ * This code does not use any complicated vector math, only simple conversions and some
+ * addition
+ * =======================================================================================
  */
 
 package org.firstinspires.ftc.teamcode.TeleOp;
@@ -39,9 +39,9 @@ public class MecanumMath {
 
     //===================================[Constants]===========================================
     //change these constants if the robot is not behaving correctly!
-    private static final double[] verticalDrive = {1, -1, 1, -1};   //the motor values that drive straight forward  (maybe backwards?)
-    private static final double[] horizontalDrive = {1, 1, -1, -1};   //the motor values that strafe left             (maybe right?)
-    private static final double[] turnDrive = {1, 1, 1, 1};        //the motor values that turn clockwise          (maybe counterclockwise?)
+    private static final double[] verticalDrive = {-1, -1, -1, -1};   //the motor values that drive straight forward  (maybe backwards?)
+    private static final double[] horizontalDrive = {-1, 1, 1, -1};   //the motor values that strafe left             (maybe right?)
+    private static final double[] turnDrive = {-1, -1, 1, 1};        //the motor values that turn clockwise          (maybe counterclockwise?)
 
 
     //==================================[Methods]==============================================

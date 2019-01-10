@@ -16,6 +16,7 @@ public class Drive {
 
     /**
      * Move motors based on left/right joystick from gamepad.
+     *
      * @param motors array of motors [lf, lb, rf, rb]
      */
     public static void Tank(ArrayList<DcMotor> motors, Gamepad gamepad) {
@@ -24,19 +25,21 @@ public class Drive {
 
     /**
      * Move motors based on drone-style input
+     *
      * @param motors array of motors [lf, lb, rf, rb]
      */
     public static void Mecanum(ArrayList<DcMotor> motors, double multiplier, double x, double y, double turn) {
         double[] motorPowerArray = MecanumMath.vectorToMotors(x, y, turn);
         motors.get(0).setPower(multiplier * motorPowerArray[0]);
-        motors.get(1).setPower(multiplier * motorPowerArray[2]);
-        motors.get(2).setPower(multiplier * motorPowerArray[1]);
+        motors.get(1).setPower(multiplier * motorPowerArray[1]);
+        motors.get(2).setPower(multiplier * motorPowerArray[2]);
         motors.get(3).setPower(multiplier * motorPowerArray[3]);
     }
 
     /**
      * Move motors based on drone-style input from gamepad (left stick strafe, right stick turn)
-     * @param motors array of motors [lf, lb, rf, rb]
+     *
+     * @param motors  array of motors [lf, lb, rf, rb]
      * @param gamepad the gamepad to control the robot with (gamepad1/gamepad2)
      */
     public static void Mecanum(ArrayList<DcMotor> motors, Gamepad gamepad) {
@@ -54,11 +57,6 @@ public class Drive {
         }
     }
 
-    public enum DriveType {
-        TANK,
-        MECANUM
-    }
-
     private static double gear(Gamepad gamepad) {
         double gear;
 
@@ -72,5 +70,10 @@ public class Drive {
 
         return gear;
         // TODO: find a way to report this variable to the user
+    }
+
+    public enum DriveType {
+        TANK,
+        MECANUM
     }
 }
