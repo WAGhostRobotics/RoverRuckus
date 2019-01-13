@@ -29,6 +29,11 @@ public class Robot {
     public static DcMotor spool;
     public static CRServo intake;
 
+    // Miriam's Slide
+    public static Servo dump;
+    public static final double DUMP_UP = 0.2;
+    public static final double DUMP_DOWN = 0.6;
+
     /**
      *
      * @param hwMap the HardwareMap to pass in from the OpMode
@@ -61,5 +66,9 @@ public class Robot {
 
         intake = hardwareMap.get(CRServo.class, "in");
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        dump = hardwareMap.get(Servo.class, "du");
+        dump.setDirection(Servo.Direction.FORWARD);
+        dump.setPosition(DUMP_UP);
     }
 }

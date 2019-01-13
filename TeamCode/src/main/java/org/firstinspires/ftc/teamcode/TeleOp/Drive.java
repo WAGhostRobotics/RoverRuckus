@@ -56,8 +56,8 @@ public class Drive {
      * @param strafeRight
      */
     public static void MecanumTank(ArrayList<DcMotor> motors, double multiplier, double left, double right, double strafeLeft, double strafeRight) {
-        motors.get(0).setPower((multiplier * left) + (multiplier * strafeRight) - (multiplier * strafeLeft));
-        motors.get(1).setPower((multiplier * left) - (multiplier * strafeRight) + (multiplier * strafeLeft));
+        motors.get(0).setPower((multiplier * left) - (multiplier * strafeRight) + (multiplier * strafeLeft));
+        motors.get(1).setPower((multiplier * left) + (multiplier * strafeRight) - (multiplier * strafeLeft));
         motors.get(2).setPower((multiplier * right) + (multiplier * strafeRight) - (multiplier * strafeLeft));
         motors.get(3).setPower((multiplier * right) - (multiplier * strafeRight) + (multiplier * strafeLeft));
     }
