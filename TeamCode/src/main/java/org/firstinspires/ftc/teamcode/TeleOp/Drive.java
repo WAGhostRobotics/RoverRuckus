@@ -28,7 +28,7 @@ public class Drive {
      *
      * @param motors array of motors [lf, lb, rf, rb]
      */
-    public static void Mecanum(ArrayList<DcMotor> motors, double multiplier, double x, double y, double turn) {
+    public static void MecanumArcade(ArrayList<DcMotor> motors, double multiplier, double x, double y, double turn) {
         double[] motorPowerArray = MecanumMath.vectorToMotors(x, y, turn);
         motors.get(0).setPower(multiplier * motorPowerArray[0]);
         motors.get(1).setPower(multiplier * motorPowerArray[1]);
@@ -42,8 +42,33 @@ public class Drive {
      * @param motors  array of motors [lf, lb, rf, rb]
      * @param gamepad the gamepad to control the robot with (gamepad1/gamepad2)
      */
-    public static void Mecanum(ArrayList<DcMotor> motors, Gamepad gamepad) {
-        Mecanum(motors, gear(gamepad), gamepad.left_stick_x, -gamepad.left_stick_y, gamepad.right_stick_x);
+    public static void MecanumArcade(ArrayList<DcMotor> motors, Gamepad gamepad) {
+        MecanumArcade(motors, gear(gamepad), gamepad.left_stick_x, -gamepad.left_stick_y, gamepad.right_stick_x);
+    }
+
+    /**
+     * Leo says: inwards left, outwards right (1/12/2019)
+     * @param motors
+     * @param multiplier
+     * @param left
+     * @param right
+     * @param strafeLeft
+     * @param strafeRight
+     */
+    public static void MecanumTank(ArrayList<DcMotor> motors, double multiplier, double left, double right, double strafeLeft, double strafeRight) {
+        motors.get(0).setPower((multiplier * left) + (multiplier * strafeRight) - (multiplier * strafeLeft));
+        motors.get(1).setPower((multiplier * left) - (multiplier * strafeRight) + (multiplier * strafeLeft));
+        motors.get(2).setPower((multiplier * right) + (multiplier * strafeRight) - (multiplier * strafeLeft));
+        motors.get(3).setPower((multiplier * right) - (multiplier * strafeRight) + (multiplier * strafeLeft));
+    }
+
+    /**
+     * Move motors based on left/right joystick from gamepad.
+     *
+     * @param motors array of motors [lf, lb, rf, rb]
+     */
+    public static void MecanumTank(ArrayList<DcMotor> motors, Gamepad gamepad) {
+        MecanumTank(motors, gear(gamepad), -gamepad.left_stick_y, -gamepad.right_stick_y, gamepad.left_trigger, gamepad.right_trigger);
     }
 
     public static void driveWithType(ArrayList<DcMotor> motors, Gamepad gamepad, DriveType type) {
@@ -51,8 +76,11 @@ public class Drive {
             case TANK:
                 Tank(motors, gamepad);
                 break;
-            case MECANUM:
-                Mecanum(motors, gamepad);
+            case MECANUMARCADE:
+                MecanumArcade(motors, gamepad);
+                break;
+            case MECANUMTANK:
+                MecanumTank(motors, gamepad);
                 break;
         }
     }
@@ -74,6 +102,7 @@ public class Drive {
 
     public enum DriveType {
         TANK,
-        MECANUM
+        MECANUMARCADE,
+        MECANUMTANK
     }
 }

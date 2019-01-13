@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,13 +19,17 @@ public class Robot {
     public static DcMotor dRightRear;
 
     // Motors array [in order: lf, lr, rf, rr]
-    public static ArrayList<DcMotor> driveMotors = new ArrayList<DcMotor>();
+    public static ArrayList<DcMotor> driveMotors = new ArrayList<>();
 
     // Lift
     public static DcMotor rackPinion;
 
+    // Linear Slide
+    public static DcMotor linearSlide;
+    public static DcMotor spool;
+    public static CRServo intake;
+
     /**
-     *
      *
      * @param hwMap the HardwareMap to pass in from the OpMode
      */
@@ -47,5 +52,14 @@ public class Robot {
 
         rackPinion = hardwareMap.get(DcMotor.class, "rp");
         rackPinion.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        linearSlide = hardwareMap.get(DcMotor.class, "ls");
+        linearSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        spool = hardwareMap.get(DcMotor.class, "sp");
+        spool.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        intake = hardwareMap.get(CRServo.class, "in");
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 }

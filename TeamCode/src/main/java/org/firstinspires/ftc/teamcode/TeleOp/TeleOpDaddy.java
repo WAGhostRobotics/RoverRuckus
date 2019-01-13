@@ -38,9 +38,37 @@ public abstract class TeleOpDaddy extends LinearOpMode {
                 Robot.rackPinion.setPower(0);
             }
 
+            // Linear Slide Spool Control (g1.dpad_left/dpad_right)
+            if (gamepad1.dpad_left) {
+                Robot.spool.setPower(1);
+            } else if (gamepad1.dpad_right) {
+                Robot.spool.setPower(-1);
+            } else {
+                Robot.spool.setPower(0);
+            }
+
+            // Linear Slide Swing Control (g1.dpad_left/dpad_right)
+            if (gamepad1.b) {
+                Robot.linearSlide.setPower(.5);
+            } else if (gamepad1.y) {
+                Robot.linearSlide.setPower(-.5);
+            } else {
+                Robot.linearSlide.setPower(0);
+            }
+
+            // Linear Slide Intake Control (g1.dpad_left/dpad_right)
+            if (gamepad1.a) {
+                Robot.intake.setPower(1);
+            } else if (gamepad1.x) {
+                Robot.intake.setPower(-1);
+            } else {
+                Robot.intake.setPower(0);
+            }
+
             // Send diagnostics to user
             telemetry.addData("Status", "Running");
             telemetry.update();
+
         }
     }
 }
