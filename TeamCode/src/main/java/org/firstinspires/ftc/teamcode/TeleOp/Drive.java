@@ -71,6 +71,13 @@ public class Drive {
         MecanumTank(motors, gear(gamepad), -gamepad.left_stick_y, -gamepad.right_stick_y, gamepad.left_trigger, gamepad.right_trigger);
     }
 
+    public static void stop(ArrayList<DcMotor> motors) {
+        motors.get(0).setPower(0);
+        motors.get(1).setPower(0);
+        motors.get(2).setPower(0);
+        motors.get(3).setPower(0);
+    }
+
     public static void driveWithType(ArrayList<DcMotor> motors, Gamepad gamepad, DriveType type) {
         switch (type) {
             case TANK:
@@ -97,7 +104,6 @@ public class Drive {
         }
 
         return gear;
-        // TODO: find a way to report this variable to the user
     }
 
     public enum DriveType {

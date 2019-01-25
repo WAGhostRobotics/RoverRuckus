@@ -1,73 +1,114 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.TeleOp.Drive;
 
 @Autonomous(name = "Auto")
-public class Auto extends LinearOpMode {
+public class Auto extends CVLinearOpMode {
+    DriveAuto drivetrain = new DriveAuto(Robot.driveMotors);
 
     @Override
     public void runOpMode() throws InterruptedException {
+        // -----[Program is in state INITIALIZING]-----
 
         // Send diagnostics to user
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
 
         Robot.init(hardwareMap);
-        telemetry.addData(" ", " ");
-        telemetry.update();
-
-        // Call CV detection code here
-        telemetry.addData("Mineral", "[LOCATION]");
+        initCV();
         telemetry.update();
 
         // Send diagnostics to user
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        waitForStart();
+        tfod.activate();
 
-        lowerLift(4.25);
+        while (!isStarted()) {
+            // Call CV detection code here
+            scanForPosition();
+            telemetry.addData("Mineral", blockPosition);
+            telemetry.update();
+        }
+
+        tfod.shutdown();
+        // -----[Program is in state STARTED]-----
+
+        lowerLift();
 
         moveRobotTowardsMineral();
 
         knockMineral();
 
-        // Move robot towards depot
+        moveRobotTowardsDepot();
 
         dropTeamMarker();
 
-        // Drive to crater
+        moveRobotTowardsCrater();
 
         parkOnCrater();
     }
 
-    void lowerLift(double seconds) {
+    void lowerLift() {
+        Robot.linearSlide.setPower(.5);
+        sleep(400);
+        Robot.linearSlide.setPower(0);
         Robot.rackPinion.setPower(1);
         telemetry.addData("Lift", "Lowering");
         telemetry.update();
-        sleep((int) (seconds * 1000));
+        sleep(3750);
         Robot.rackPinion.setPower(0);
         telemetry.addData("Lift", "Lowered");
         telemetry.update();
     }
 
+    void moveRobotTowardsMineral() {
+        drivetrain.move(DriveAuto.MoveDirection.LEFT, .5, 1);
+        Drive.stop(Robot.driveMotors);
+        drivetrain.move(DriveAuto.MoveDirection.BACKWARD, .5, 1.5);
+        Drive.stop(Robot.driveMotors);
+        drivetrain.move(DriveAuto.MoveDirection.RIGHT, .5, 1);
+        Drive.stop(Robot.driveMotors);
+    }
+
     void knockMineral() {
-        telemetry.addData("Mineral", "Knocking [LOCATION]");
+        telemetry.addData("Mineral", "Knocking" + blockPosition);
         telemetry.update();
-        telemetry.addData("Mineral", "Knocked [LOCATION]");
+        // Align with block
+        switch (blockPosition) {
+            case LEFT:
+                drivetrain.move(DriveAuto.MoveDirection.LEFT, .5, 1);
+                Drive.stop(Robot.driveMotors);
+                break;
+            case RIGHT:
+                drivetrain.move(DriveAuto.MoveDirection.RIGHT, .5, 1);
+                Drive.stop(Robot.driveMotors);
+                break;
+            case UNKNOWN:
+                // fall through
+            case CENTER:
+                break;
+        }
+        Drive.stop(Robot.driveMotors);
+        // Knock block
+        drivetrain.move(DriveAuto.MoveDirection.BACKWARD, .5, 1);
+        sleep(1000);
+        // Move back to previous position
+        drivetrain.move(DriveAuto.MoveDirection.FORWARD, .5, 1);
+        telemetry.addData("Mineral", "Knocked" + blockPosition);
         telemetry.update();
     }
 
-    void moveRobotTowardsMineral() {
-        Drive.MecanumTank(Robot.driveMotors, 0, 0, 0, 1, 0);
-        sleep(1 * 1000);
-        Drive.Tank(Robot.driveMotors, 1, -1, -1);
-        sleep(1 * 1000);
-        Drive.Tank(Robot.driveMotors, 0, 0, 0);
+    void moveRobotTowardsDepot() {
+        drivetrain.turn(DriveAuto.TurnDirection.RIGHT, .5, 90, BNO055IMU.AngleUnit.DEGREES);
+        drivetrain.move(DriveAuto.MoveDirection.FORWARD, .5, 1);
+        drivetrain.turn(DriveAuto.TurnDirection.LEFT, .5, 45, BNO055IMU.AngleUnit.DEGREES);
+        drivetrain.move(DriveAuto.MoveDirection.FORWARD, .5, 2);
     }
 
     void dropTeamMarker() {
@@ -76,7 +117,19 @@ public class Auto extends LinearOpMode {
         telemetry.update();
     }
 
+    void moveRobotTowardsCrater() {
+        drivetrain.move(DriveAuto.MoveDirection.BACKWARD, .5, 2);
+    }
+
     void parkOnCrater() {
+        Robot.linearSlide.setPower(.5);
+        sleep(1000);
+        Robot.linearSlide.setPower(0);
+
+        Robot.spool.setPower(1);
+        sleep(2000);
+        Robot.spool.setPower(0);
+
         telemetry.addData("Crater", "Parked on");
         telemetry.update();
     }

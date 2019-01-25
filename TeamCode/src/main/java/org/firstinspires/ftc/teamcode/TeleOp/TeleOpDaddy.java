@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
-public abstract class TeleOpDaddy extends LinearOpMode {
+public class TeleOpDaddy extends LinearOpMode {
 
     Drive.DriveType type = Drive.DriveType.TANK;
 
@@ -30,36 +30,36 @@ public abstract class TeleOpDaddy extends LinearOpMode {
             Drive.driveWithType(Robot.driveMotors, gamepad1, type);
 
             // Rack/Pinion Control (g1.dpad_up/dpad_down)
-            if (gamepad1.dpad_up) {
+            if (gamepad1.dpad_up || gamepad2.dpad_up) {
                 Robot.rackPinion.setPower(1);
-            } else if (gamepad1.dpad_down) {
+            } else if (gamepad1.dpad_down || gamepad2.dpad_down) {
                 Robot.rackPinion.setPower(-1);
             } else {
                 Robot.rackPinion.setPower(0);
             }
 
             // Linear Slide Spool Control (g1.dpad_left/dpad_right)
-            if (gamepad1.dpad_left) {
+            if (gamepad1.dpad_left || gamepad2.dpad_left) {
                 Robot.spool.setPower(1);
-            } else if (gamepad1.dpad_right) {
+            } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
                 Robot.spool.setPower(-1);
             } else {
                 Robot.spool.setPower(0);
             }
 
             // Linear Slide Swing Control (g1.dpad_left/dpad_right)
-            if (gamepad1.b) {
+            if (gamepad1.b || gamepad2.b) {
                 Robot.linearSlide.setPower(.5);
-            } else if (gamepad1.y) {
+            } else if (gamepad1.y || gamepad2.y) {
                 Robot.linearSlide.setPower(-.5);
             } else {
                 Robot.linearSlide.setPower(0);
             }
 
             // Linear Slide Intake Control (g1.dpad_left/dpad_right)
-            if (gamepad1.a) {
+            if (gamepad1.a || gamepad2.a) {
                 Robot.intake.setPower(1);
-            } else if (gamepad1.x) {
+            } else if (gamepad1.x || gamepad2.x) {
                 Robot.intake.setPower(-1);
             } else {
                 Robot.intake.setPower(0);

@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.Auto.Gyro;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +36,10 @@ public class Robot {
     public static Servo dump;
     public static final double DUMP_UP = 0.2;
     public static final double DUMP_DOWN = 0.6;
+
+    // Gyroscope
+    public static BNO055IMU imu;
+    public static Gyro gyro;
 
     /**
      *
@@ -70,5 +77,8 @@ public class Robot {
         dump = hardwareMap.get(Servo.class, "du");
         dump.setDirection(Servo.Direction.FORWARD);
         dump.setPosition(DUMP_UP);
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        gyro = new Gyro(imu);
     }
 }
