@@ -49,11 +49,14 @@ public class TeleOpDaddy extends LinearOpMode {
 
             // Linear Slide Swing Control (g1.dpad_left/dpad_right)
             if (gamepad1.b || gamepad2.b) {
-                Robot.linearSlide.setPower(.5);
+                Robot.rotate1.setPower(.5);
+                Robot.rotate2.setPower(.5);
             } else if (gamepad1.y || gamepad2.y) {
-                Robot.linearSlide.setPower(-.5);
+                Robot.rotate1.setPower(-.5);
+                Robot.rotate2.setPower(-.5);
             } else {
-                Robot.linearSlide.setPower(0);
+                Robot.rotate1.setPower(0);
+                Robot.rotate2.setPower(0);
             }
 
             // Linear Slide Intake Control (g1.dpad_left/dpad_right)
@@ -68,7 +71,6 @@ public class TeleOpDaddy extends LinearOpMode {
             // Send diagnostics to user
             telemetry.addData("Status", "Running");
             telemetry.update();
-
         }
     }
 }

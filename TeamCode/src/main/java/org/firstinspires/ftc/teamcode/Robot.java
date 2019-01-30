@@ -10,16 +10,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Auto.Gyro;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Robot {
     public static HardwareMap hardwareMap;
 
     // Drive
-    public static DcMotor dLeftFront;
-    public static DcMotor dLeftRear;
-    public static DcMotor dRightFront;
-    public static DcMotor dRightRear;
+    public static DcMotor dFrontLeft;
+    public static DcMotor dFrontRight;
+    public static DcMotor dBackLeft;
+    public static DcMotor dBackRight;
 
     // Motors array [in order: lf, lr, rf, rr]
     public static ArrayList<DcMotor> driveMotors = new ArrayList<>();
@@ -28,7 +27,8 @@ public class Robot {
     public static DcMotor rackPinion;
 
     // Linear Slide
-    public static DcMotor linearSlide;
+    public static DcMotor rotate1;
+    public static DcMotor rotate2;
     public static DcMotor spool;
     public static CRServo intake;
 
@@ -47,26 +47,28 @@ public class Robot {
      */
     public static void init(HardwareMap hwMap) {
         hardwareMap = hwMap;
-        dLeftFront = hardwareMap.get(DcMotor.class, "lf");
-        dLeftRear = hardwareMap.get(DcMotor.class, "lr");
-        dRightFront = hardwareMap.get(DcMotor.class, "rf");
-        dRightRear = hardwareMap.get(DcMotor.class, "rr");
+        dFrontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        dFrontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        dBackLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        dBackRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        dLeftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        dLeftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        dRightFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        dRightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        dFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        dFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        dBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        dBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        driveMotors.add(dLeftFront);
-        driveMotors.add(dLeftRear);
-        driveMotors.add(dRightFront);
-        driveMotors.add(dRightRear);
+        driveMotors.add(dFrontLeft);
+        driveMotors.add(dFrontRight);
+        driveMotors.add(dBackLeft);
+        driveMotors.add(dBackRight);
 
         rackPinion = hardwareMap.get(DcMotor.class, "rp");
         rackPinion.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        linearSlide = hardwareMap.get(DcMotor.class, "ls");
-        linearSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rotate1 = hardwareMap.get(DcMotor.class, "rotate1");
+        rotate1.setDirection(DcMotorSimple.Direction.FORWARD);
+        rotate2 = hardwareMap.get(DcMotor.class, "rotate2");
+        rotate2.setDirection(DcMotorSimple.Direction.FORWARD);
 
         spool = hardwareMap.get(DcMotor.class, "sp");
         spool.setDirection(DcMotorSimple.Direction.FORWARD);

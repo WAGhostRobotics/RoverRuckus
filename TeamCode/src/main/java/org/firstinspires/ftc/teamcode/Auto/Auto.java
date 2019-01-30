@@ -55,9 +55,11 @@ public class Auto extends CVLinearOpMode {
     }
 
     void lowerLift() {
-        Robot.linearSlide.setPower(.5);
+        Robot.rotate1.setPower(.5);
+        Robot.rotate2.setPower(.5);
         sleep(400);
-        Robot.linearSlide.setPower(0);
+        Robot.rotate1.setPower(0);
+        Robot.rotate2.setPower(0);
         Robot.rackPinion.setPower(1);
         telemetry.addData("Lift", "Lowering");
         telemetry.update();
@@ -122,9 +124,11 @@ public class Auto extends CVLinearOpMode {
     }
 
     void parkOnCrater() {
-        Robot.linearSlide.setPower(.5);
+        Robot.rotate1.setPower(.5);
+        Robot.rotate2.setPower(.5);
         sleep(1000);
-        Robot.linearSlide.setPower(0);
+        Robot.rotate1.setPower(0);
+        Robot.rotate2.setPower(0);
 
         Robot.spool.setPower(1);
         sleep(2000);
