@@ -35,11 +35,10 @@ public class Robot {
     // Miriam's Slide
     public static Servo dump;
     public static final double DUMP_UP = 0.2;
-    public static final double DUMP_DOWN = 0.6;
+    public static final double DUMP_DOWN = 0.7;
 
     // Gyroscope
     public static BNO055IMU imu;
-    public static Gyro gyro;
 
     /**
      *
@@ -81,6 +80,5 @@ public class Robot {
         dump.setPosition(DUMP_UP);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        gyro = new Gyro(imu);
     }
 }

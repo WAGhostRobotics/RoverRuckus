@@ -9,7 +9,9 @@ import org.firstinspires.ftc.teamcode.TeleOp.Drive;
 
 @Autonomous(name = "Auto")
 public class Auto extends CVLinearOpMode {
+    Gyro gyro;
     DriveAuto drivetrain = new DriveAuto(Robot.driveMotors);
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -21,6 +23,7 @@ public class Auto extends CVLinearOpMode {
 
         Robot.init(hardwareMap);
         initCV();
+        gyro = new Gyro(Robot.imu);
         telemetry.update();
 
         // Send diagnostics to user
@@ -55,11 +58,6 @@ public class Auto extends CVLinearOpMode {
     }
 
     void lowerLift() {
-        Robot.rotate1.setPower(.5);
-        Robot.rotate2.setPower(.5);
-        sleep(400);
-        Robot.rotate1.setPower(0);
-        Robot.rotate2.setPower(0);
         Robot.rackPinion.setPower(1);
         telemetry.addData("Lift", "Lowering");
         telemetry.update();
@@ -67,6 +65,12 @@ public class Auto extends CVLinearOpMode {
         Robot.rackPinion.setPower(0);
         telemetry.addData("Lift", "Lowered");
         telemetry.update();
+
+        Robot.rotate1.setPower(.5);
+        Robot.rotate2.setPower(.5);
+        sleep(250);
+        Robot.rotate1.setPower(0);
+        Robot.rotate2.setPower(0);
     }
 
     void moveRobotTowardsMineral() {
@@ -107,20 +111,22 @@ public class Auto extends CVLinearOpMode {
     }
 
     void moveRobotTowardsDepot() {
-        drivetrain.turn(DriveAuto.TurnDirection.RIGHT, .5, 90, BNO055IMU.AngleUnit.DEGREES);
-        drivetrain.move(DriveAuto.MoveDirection.FORWARD, .5, 1);
-        drivetrain.turn(DriveAuto.TurnDirection.LEFT, .5, 45, BNO055IMU.AngleUnit.DEGREES);
-        drivetrain.move(DriveAuto.MoveDirection.FORWARD, .5, 2);
+        drivetrain.turn(DriveAuto.TurnDirection.RIGHT, .5, 90, gyro);
+        drivetrain.move(DriveAuto.MoveDirection.FORWARD, 1, 1.5);
+        drivetrain.turn(DriveAuto.TurnDirection.LEFT, .5, 45, gyro);
+        drivetrain.move(DriveAuto.MoveDirection.FORWARD, 1, 2);
     }
 
     void dropTeamMarker() {
+        Drive.stop(Robot.driveMotors);
         Robot.dump.setPosition(Robot.DUMP_DOWN);
+        sleep(1000);
         telemetry.addData("Team Marker", "Dropped");
         telemetry.update();
     }
 
     void moveRobotTowardsCrater() {
-        drivetrain.move(DriveAuto.MoveDirection.BACKWARD, .5, 2);
+        drivetrain.move(DriveAuto.MoveDirection.BACKWARD, 1, 2);
     }
 
     void parkOnCrater() {
@@ -136,5 +142,10 @@ public class Auto extends CVLinearOpMode {
 
         telemetry.addData("Crater", "Parked on");
         telemetry.update();
+    }
+
+    enum StartLocation {
+        DEPOT,
+        CRATER
     }
 }

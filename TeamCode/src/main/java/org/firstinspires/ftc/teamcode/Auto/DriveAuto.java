@@ -38,9 +38,9 @@ public class DriveAuto {
         Drive.stop(motors);
     }
 
-    public void turn(TurnDirection direction, double power, double heading, BNO055IMU.AngleUnit unit) {
-        Robot.gyro.resetAngle();
-        double currentHeading = Robot.gyro.getAngle();
+    public void turn(TurnDirection direction, double power, double heading, Gyro gyro) {
+        gyro.resetAngle();
+        double currentHeading = gyro.getAngle();
         switch (direction) {
             case LEFT:
                 Drive.Tank(motors, power, -1, 1);
@@ -50,7 +50,7 @@ public class DriveAuto {
                 break;
         }
         while ((direction == TurnDirection.LEFT ? currentHeading < heading : currentHeading > -heading) && !new TeleOpDaddy().isStopRequested()) {
-            currentHeading = Robot.gyro.getAngle();
+            currentHeading = gyro.getAngle();
         }
         Drive.stop(motors);
     }

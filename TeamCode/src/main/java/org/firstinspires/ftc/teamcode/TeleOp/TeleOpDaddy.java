@@ -68,6 +68,12 @@ public class TeleOpDaddy extends LinearOpMode {
                 Robot.intake.setPower(0);
             }
 
+            if (gamepad1.left_stick_button || gamepad2.left_stick_button) {
+                Robot.dump.setPosition(Robot.DUMP_DOWN);
+            } else if (gamepad1.right_stick_button || gamepad2.right_stick_button) {
+                Robot.dump.setPosition(Robot.DUMP_UP);
+            }
+
             // Send diagnostics to user
             telemetry.addData("Status", "Running");
             telemetry.update();
