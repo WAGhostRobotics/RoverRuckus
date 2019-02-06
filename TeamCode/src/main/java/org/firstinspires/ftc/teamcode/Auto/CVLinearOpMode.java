@@ -40,7 +40,7 @@ public abstract class CVLinearOpMode extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -76,7 +76,7 @@ public abstract class CVLinearOpMode extends LinearOpMode {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
-                if (updatedRecognitions.size() == 3) {
+                if (updatedRecognitions.size() == 3) { //Leo editied this line. To edit it back, change "> 0" to "== 3".
                     int goldMineralX = -1;
                     int silverMineral1X = -1;
                     int silverMineral2X = -1;
@@ -89,6 +89,7 @@ public abstract class CVLinearOpMode extends LinearOpMode {
                             silverMineral2X = (int) recognition.getLeft();
                         }
                     }
+                    //Leo commented this part out
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                         if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Left");
@@ -101,6 +102,17 @@ public abstract class CVLinearOpMode extends LinearOpMode {
                             blockPosition = BlockPosition.CENTER;
                         }
                     }
+                    /*
+                    //Leo added this if-else statement as well
+                    if(goldMineralX != -1){
+                        telemetry.addData("Gold Mineral Detected!", "Center");
+                        blockPosition = BlockPosition.CENTER;
+                    }else{
+                        telemetry.addData("Gold Mineral Not Found :(", "Center");
+                        blockPosition = BlockPosition.UNKNOWN;
+                    }
+                    */
+
                 } else {
                     blockPosition = BlockPosition.UNKNOWN;
                 }

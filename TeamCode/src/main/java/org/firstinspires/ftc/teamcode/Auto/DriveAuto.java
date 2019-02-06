@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.TeleOp.Drive;
 import org.firstinspires.ftc.teamcode.TeleOp.TeleOpDaddy;
 
@@ -13,7 +10,6 @@ import java.util.ArrayList;
 public class DriveAuto {
 
     private ArrayList<DcMotor> motors;
-    TeleOpDaddy daddy = new TeleOpDaddy();
 
     public DriveAuto(ArrayList<DcMotor> motors) {
         this.motors = motors;
@@ -34,7 +30,7 @@ public class DriveAuto {
                 Drive.MecanumArcade(motors, power, -1, 0, 0);
                 break;
         }
-        daddy.sleep((int) seconds * 1000);
+        new TeleOpDaddy().sleep((int) (seconds * 1000));
         Drive.stop(motors);
     }
 
@@ -64,8 +60,13 @@ public class DriveAuto {
                 Drive.Tank(motors, power, 1, -1);
                 break;
         }
-        new TeleOpDaddy().sleep((int) seconds * 1000);
+        new TeleOpDaddy().sleep((int) (seconds * 1000));
         Drive.stop(motors);
+    }
+
+    public void stop(double seconds) {
+        Drive.stop(motors);
+        new TeleOpDaddy().sleep((int) (seconds * 1000));
     }
 
     public enum MoveDirection {

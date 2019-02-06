@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.TeleOp.Drive;
 
-@Autonomous(name = "Auto")
-public class Auto extends CVLinearOpMode {
+public class AutonomousDaddy extends CVLinearOpMode {
     Gyro gyro;
     DriveAuto drivetrain = new DriveAuto(Robot.driveMotors);
-
+    StartLocation startLocation = StartLocation.CRATER;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -46,7 +43,7 @@ public class Auto extends CVLinearOpMode {
 
         moveRobotTowardsMineral();
 
-        knockMineral();
+        //knockMineral();
 
         moveRobotTowardsDepot();
 
@@ -61,7 +58,7 @@ public class Auto extends CVLinearOpMode {
         Robot.rackPinion.setPower(1);
         telemetry.addData("Lift", "Lowering");
         telemetry.update();
-        sleep(3750);
+        sleep(3700);
         Robot.rackPinion.setPower(0);
         telemetry.addData("Lift", "Lowered");
         telemetry.update();
@@ -71,15 +68,17 @@ public class Auto extends CVLinearOpMode {
         sleep(250);
         Robot.rotate1.setPower(0);
         Robot.rotate2.setPower(0);
+
+        sleep(500);
     }
 
     void moveRobotTowardsMineral() {
-        drivetrain.move(DriveAuto.MoveDirection.LEFT, .5, 1);
+        drivetrain.move(DriveAuto.MoveDirection.LEFT, .5, .5);
         Drive.stop(Robot.driveMotors);
-        drivetrain.move(DriveAuto.MoveDirection.BACKWARD, .5, 1.5);
+        drivetrain.move(DriveAuto.MoveDirection.BACKWARD, .5, .75);
         Drive.stop(Robot.driveMotors);
-        drivetrain.move(DriveAuto.MoveDirection.RIGHT, .5, 1);
-        Drive.stop(Robot.driveMotors);
+        drivetrain.move(DriveAuto.MoveDirection.RIGHT, .5, .5);
+        sleep(1000);
     }
 
     void knockMineral() {
@@ -100,10 +99,10 @@ public class Auto extends CVLinearOpMode {
             case CENTER:
                 break;
         }
-        Drive.stop(Robot.driveMotors);
+        drivetrain.stop(.5);
         // Knock block
         drivetrain.move(DriveAuto.MoveDirection.BACKWARD, .5, 1);
-        sleep(1000);
+        drivetrain.stop(.5);
         // Move back to previous position
         drivetrain.move(DriveAuto.MoveDirection.FORWARD, .5, 1);
         telemetry.addData("Mineral", "Knocked" + blockPosition);
@@ -114,19 +113,53 @@ public class Auto extends CVLinearOpMode {
         drivetrain.turn(DriveAuto.TurnDirection.RIGHT, .5, 90, gyro);
         drivetrain.move(DriveAuto.MoveDirection.FORWARD, 1, 1.5);
         drivetrain.turn(DriveAuto.TurnDirection.LEFT, .5, 45, gyro);
-        drivetrain.move(DriveAuto.MoveDirection.FORWARD, 1, 2);
+        switch (startLocation) {
+            case CRATER:
+                drivetrain.move(DriveAuto.MoveDirection.FORWARD, 1, 1.75);
+                break;
+
+            case DEPOT:
+                drivetrain.move(DriveAuto.MoveDirection.BACKWARD, 1, 1.75);
+                break;
+        }
     }
 
     void dropTeamMarker() {
-        Drive.stop(Robot.driveMotors);
+        switch (startLocation) {
+            case CRATER:
+                drivetrain.turn(DriveAuto.TurnDirection.LEFT, .5, 45, gyro);
+                break;
+
+            case DEPOT:
+                drivetrain.turn(DriveAuto.TurnDirection.RIGHT, .5, 45, gyro);
+                break;
+        }
         Robot.dump.setPosition(Robot.DUMP_DOWN);
-        sleep(1000);
+        sleep(500);
+        switch (startLocation) {
+            case CRATER:
+                drivetrain.turn(DriveAuto.TurnDirection.RIGHT, .5, 45, gyro);
+                break;
+
+            case DEPOT:
+                drivetrain.turn(DriveAuto.TurnDirection.LEFT, .5, 45, gyro);
+                break;
+        }
         telemetry.addData("Team Marker", "Dropped");
         telemetry.update();
     }
 
     void moveRobotTowardsCrater() {
-        drivetrain.move(DriveAuto.MoveDirection.BACKWARD, 1, 2);
+        switch (startLocation) {
+            case CRATER:
+                drivetrain.move(DriveAuto.MoveDirection.BACKWARD, 1, 2.25);
+                break;
+
+            case DEPOT:
+                drivetrain.move(DriveAuto.MoveDirection.FORWARD, 1, 2.25);
+                drivetrain.turn(DriveAuto.TurnDirection.LEFT, 1, 150, gyro);
+                break;
+        }
     }
 
     void parkOnCrater() {
@@ -136,9 +169,11 @@ public class Auto extends CVLinearOpMode {
         Robot.rotate1.setPower(0);
         Robot.rotate2.setPower(0);
 
+        /*
         Robot.spool.setPower(1);
         sleep(2000);
         Robot.spool.setPower(0);
+        */
 
         telemetry.addData("Crater", "Parked on");
         telemetry.update();
