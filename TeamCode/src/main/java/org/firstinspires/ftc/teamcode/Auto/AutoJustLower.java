@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Robot;
@@ -23,7 +22,7 @@ public class AutoJustLower extends CVLinearOpMode {
         telemetry.update();
 
         Robot.init(hardwareMap);
-        initCV();
+        initDoge();
         gyro = new Gyro(Robot.imu);
         telemetry.update();
 
@@ -31,16 +30,16 @@ public class AutoJustLower extends CVLinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        tfod.activate();
+        doge.enable();
 
         while (!isStarted()) {
             // Call CV detection code here
-            scanForPosition();
-            telemetry.addData("Mineral", blockPosition);
+            dogeScanForPosition();
+            telemetry.addData("Mineral", goldLocation);
             telemetry.update();
         }
 
-        tfod.shutdown();
+        doge.disable();
         // -----[Program is in state STARTED]-----
 
         lowerLift();

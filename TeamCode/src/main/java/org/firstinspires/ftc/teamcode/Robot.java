@@ -34,8 +34,8 @@ public class Robot {
 
     // Miriam's Slide
     public static Servo dump;
-    public static final double DUMP_UP = 0.2;
-    public static final double DUMP_DOWN = 0.7;
+    public static final double DUMP_UP = 0.1;
+    public static final double DUMP_DOWN = 0.9;
 
     // Gyroscope
     public static BNO055IMU imu;
@@ -56,6 +56,19 @@ public class Robot {
         dBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         dBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
+
+        dFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        dFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        dBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        dBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        /*
+        dFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        dFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        dBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        dBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        */
+
         driveMotors.add(dFrontLeft);
         driveMotors.add(dFrontRight);
         driveMotors.add(dBackLeft);
@@ -63,14 +76,19 @@ public class Robot {
 
         rackPinion = hardwareMap.get(DcMotor.class, "rp");
         rackPinion.setDirection(DcMotorSimple.Direction.REVERSE);
+        rackPinion.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rackPinion.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rotate1 = hardwareMap.get(DcMotor.class, "rotate1");
         rotate1.setDirection(DcMotorSimple.Direction.FORWARD);
+        rotate1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rotate2 = hardwareMap.get(DcMotor.class, "rotate2");
         rotate2.setDirection(DcMotorSimple.Direction.FORWARD);
+        rotate2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         spool = hardwareMap.get(DcMotor.class, "sp");
         spool.setDirection(DcMotorSimple.Direction.FORWARD);
+        //spool.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake = hardwareMap.get(CRServo.class, "in");
         intake.setDirection(DcMotorSimple.Direction.FORWARD);

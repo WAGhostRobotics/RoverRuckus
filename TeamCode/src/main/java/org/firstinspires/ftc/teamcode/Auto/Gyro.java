@@ -12,20 +12,18 @@ import org.firstinspires.ftc.teamcode.TeleOp.TeleOpDaddy;
 public class Gyro {
 
 
-    public Gyro(BNO055IMU imu) {
-        this.gyro = imu;
-        init();
-    }
-
     // The IMU sensor object
     private BNO055IMU gyro;
-
     private Orientation lastAngles = new Orientation();
     /**
      * The current angle of the device, after correcting for sign changes.
      * Increases CCW, decreases CW
      */
     private double globalAngle;
+    public Gyro(BNO055IMU imu) {
+        this.gyro = imu;
+        init();
+    }
 
     /**
      * Initializes the IMU. Call this method before anything else.

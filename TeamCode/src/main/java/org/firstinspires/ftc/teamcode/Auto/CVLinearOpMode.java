@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.disnodeteam.dogecv.CameraViewDisplay;
+import com.disnodeteam.dogecv.DogeCV;
+import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
+import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector.GoldLocation;
+import com.disnodeteam.dogecv.filters.LeviColorFilter;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -15,20 +21,22 @@ public abstract class CVLinearOpMode extends LinearOpMode {
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
 
     // Vuforia license key
-    private static final String VUFORIA_KEY = "AV+GL7P/////AAAAGV7nYsIVuU1VqFIOfsYp0KQh9xxfhpv8vYZhVm2dOSNCK0IZ89FNdUqXUDb6FTmwosSwYv2iGyNNaeH8OGd+EYA+URkJXmtxYXTSjSxlfL7ijgu118//656cnaSAP9MIVR/y49UXnlSr9iRk2N9zUunYC4EJUpPNn6cLW4wV1t4lHtxdKHu5OQ3n7hiJVkJw+5ax0SvQ9QW6H2XcR6BpNQgN0v15zs8anuqiaRoWzV5wIqBc2NWMnmNDCuRy9de9uJPRZFglQXX5Kq1wuVH7N/B+nVRpVmJ8jnIKpEVO+nM8l7HiCfOpwdteALuWimYChVWCms06HjOZ58U3UjEHjXjELlqS9w2iYMWPOvA17HMx";
-
-    BlockPosition blockPosition = BlockPosition.UNKNOWN;
+    private static final String VUFORIA_KEY = "AZoFZrX/////AAABmWAZ6Ga0C06Shdn8BBIra9kpUV8YgKa+C9ggtup145LPUfAn+k1okjUV/NBZyx3NUuAp1XwZ8HY9v4SqbeLjhwtMhgWTMXV+3EeLgvVgrH+VmqyVrX58OkGdFsu4cC0QZgoKFuqPTSfefFASyXnAhOoAuXod/dUb4v1Rf2CJl7M4whSiLBBFFYn0JIwTNjnJ6H+2wYnQPTCPqfuh96XpeD7vUMbJNrlafV/wIuodAXJnTjw6IY0So5dDlHFq2Sx2fsxdB0kLxpYQjTomDoH8QzuWWbZawqJEMuNEHDH4rTJmKlx9iJZDeMnnMml7VOARG4nf04KMCvZkKWn+xouU51PkxdvHqutxLz0jkyCzk1lj";
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
     protected VuforiaLocalizer vuforia;
-
     /**
      * {@link #tfod} is the variable we will use to store our instance of the Tensor Flow Object
      * Detection engine.
      */
     protected TFObjectDetector tfod;
+    // Detector object
+    protected SamplingOrderDetector doge;
+    protected WebcamName bertha;
+
+    GoldLocation goldLocation = GoldLocation.UNKNOWN;
 
     /**
      * Initialize the Vuforia localization engine.
@@ -40,7 +48,7 @@ public abstract class CVLinearOpMode extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Bertha");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -51,7 +59,8 @@ public abstract class CVLinearOpMode extends LinearOpMode {
     /**
      * Initialize the Tensor Flow Object Detection engine.
      */
-    private void initTfod() {
+    protected void initTfod() {
+        initVuforia();
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
@@ -59,24 +68,14 @@ public abstract class CVLinearOpMode extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
-    protected void initCV() {
-        initVuforia();
-
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
-    }
-
-    protected void scanForPosition() {
+    protected void tfScanForPosition() {
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
-                if (updatedRecognitions.size() == 3) { //Leo editied this line. To edit it back, change "> 0" to "== 3".
+                if (updatedRecognitions.size() >= 2) {
                     int goldMineralX = -1;
                     int silverMineral1X = -1;
                     int silverMineral2X = -1;
@@ -89,42 +88,60 @@ public abstract class CVLinearOpMode extends LinearOpMode {
                             silverMineral2X = (int) recognition.getLeft();
                         }
                     }
-                    //Leo commented this part out
+
+                    if (goldMineralX != -1 && goldMineralX < silverMineral1X) {
+                        goldLocation = GoldLocation.CENTER;
+                    } else if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral1X < goldMineralX) {
+                        goldLocation = GoldLocation.RIGHT;
+                    } else if (silverMineral1X != -1 && silverMineral2X != -1) {
+                        goldLocation = GoldLocation.LEFT;
+                    }
+
+                    /*
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                         if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Left");
-                            blockPosition = BlockPosition.LEFT;
+                            goldLocation = GoldLocation.LEFT;
                         } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Right");
-                            blockPosition = BlockPosition.RIGHT;
+                            goldLocation = GoldLocation.RIGHT;
                         } else {
                             telemetry.addData("Gold Mineral Position", "Center");
-                            blockPosition = BlockPosition.CENTER;
+                            goldLocation = GoldLocation.CENTER;
                         }
-                    }
-                    /*
-                    //Leo added this if-else statement as well
-                    if(goldMineralX != -1){
-                        telemetry.addData("Gold Mineral Detected!", "Center");
-                        blockPosition = BlockPosition.CENTER;
-                    }else{
-                        telemetry.addData("Gold Mineral Not Found :(", "Center");
-                        blockPosition = BlockPosition.UNKNOWN;
                     }
                     */
 
                 } else {
-                    blockPosition = BlockPosition.UNKNOWN;
+                    goldLocation = GoldLocation.UNKNOWN;
                 }
                 telemetry.update();
             }
         }
     }
 
-    enum BlockPosition {
-        LEFT,
-        CENTER,
-        RIGHT,
-        UNKNOWN
+    protected void initDoge() {
+        // Setup doge
+        bertha = hardwareMap.get(WebcamName.class, "Bertha"); //Retrieves the webcam from the hardware map
+        doge = new SamplingOrderDetector(); // Create the doge
+        doge.VUFORIA_KEY = VUFORIA_KEY;
+        doge.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), DogeCV.CameraMode.WEBCAM, false, bertha); // Initialize doge with app context and camera
+        doge.useDefaults(); // Set detector to use default settings
+
+        doge.downscale = 0.4; // How much to downscale the input frames
+        doge.whiteFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.WHITE);
+        // Optional tuning
+        doge.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
+        doge.perfectAreaScorer.perfectArea = 1400; // if using PERFECT_AREA scoring
+        doge.maxAreaScorer.weight = 0.001;
+
+        doge.ratioScorer.weight = 15;
+        doge.ratioScorer.perfectRatio = 1.0;
+    }
+
+    protected void dogeScanForPosition() {
+        goldLocation = doge.getLastOrder();
+        telemetry.addData("Current Order", doge.getCurrentOrder().toString()); // The current result for the frame
+        telemetry.addData("Last Order", doge.getLastOrder().toString()); // The last known result
     }
 }

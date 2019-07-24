@@ -40,7 +40,7 @@ public class MecanumMath {
     //===================================[Constants]===========================================
     //change these constants if the robot is not behaving correctly!
     private static final double[] verticalDrive = {-1, -1, -1, -1};   //the motor values that drive straight forward  (maybe backwards?)
-    private static final double[] horizontalDrive = {-1, 1, 1, -1};   //the motor values that strafe left             (maybe right?)
+    private static final double[] horizontalDrive = {1, -1, -1, 1};   //the motor values that strafe left             (maybe right?)
     private static final double[] turnDrive = {-1, -1, 1, 1};        //the motor values that turn clockwise          (maybe counterclockwise?)
 
 
